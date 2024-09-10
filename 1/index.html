@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Portfolio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+            img {
+                width: 500px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Project 1 — Images of the Russian Empire; Colorizing the Prokudin-Gorskii Photo Collection</h1>
+        <h2>Project Information</h2>
+            <h3>Overview</h3>
+                <p>
+                    Sergei Mikhailovich Prokudin-Gorskii traveled across the Russian Empire, taking photos and
+                    recording exposures of each scene onto a glass plate using a red, a green, and a blue filter.
+                    The Library of Congress digitized the negatives. This project is about using different techniques
+                    so that for each scene, we "align" the red, green, and blue "images" to produce a color
+                    image.
+                </p>
+            <h3>Exhaustive Search</h3>
+                <p>
+                    The initial, basic technique used to align images is just an exhaustive search where we try every
+                    possible combination of vertical and horizontal displacements in a window (in our case, [-15, 15] both
+                    vertical and horizontal). We set the "blue" image (aka the negative produced via the blue filter) as
+                    the "base" for each scene, and worked to align the green and red images to each blue image.
+                    We can use the Euclidean Distance between images to score the alignment from each displacement, and take the
+                    best-scoring displacements for both the green and red images for each scene. Then, we apply the green and
+                    red images on top of the blue image with such optimal displacements.
+                </p>
+                <p>
+                    This technique is not very "intelligent" and relies on brute-forcing through all possible displacements in
+                    a certain window of pixels. If this window of pixels is too large, the algorithm can be very slow; however, if
+                    the window of pixels is too small relative to the amount of pixels in the overall images, then we may not get an
+                    strong result image because the optimal displacements for the green and red images may not be within the window itself.
+                    As a result, the technique is good for cases where the images don't have as many pixels (in this case, the JPEG images),
+                    and we're forced to rely on more efficient techniques for higher-resolution images like the TIF images.
+                </p>
+            <h3>Image Pyramid</h3>
+                <p>
+                    Pyramid alignment works by aligning images from coarse to fine resolutions. Alignment starts at the most coarse
+                    resolution, where the image has fewer pixels, making it easier to find a rough alignment by searching a smaller,
+                    more manageable area via exhaustive search. At each step, the alignment from the previous (lower resolution) step 
+                    is used to guide the next, more detailed alignment. This method speeds up the process, even for high-resolution images, 
+                    by narrowing the search space at each level, making the alignment more efficient as it becomes more refined. Here,
+                    Euclidean Distance was also used to score alignment.
+                </p>
+                <p>
+                    We used image pyramids to align the TIF images, which were much larger and had lot more pixels/resolutions
+                    than the JPEG images.
+                </p>
+            <h3>Debugging and Optimizations</h3>
+                <p>
+                    One thing I did to optimze the algorithms for image alignment was to crop the image before scoring via Euclidean Distance.
+                    I took out 20% of both the height and width (10% next to each edge). This is because the borders are very "noisy" and
+                    contain scratches, misalignment marks, or stains, and I don't want to consider the "alignment" of these noisy pixels
+                    when getting the optimal displacement values for the green and red images.
+                </p>
+                <p>
+                    Another thing I did to further optimize the alignment was tinker with the window of potential displacements used in each step of the
+                    image pyramid algorithm. I was originally trying a range of [-5, 5] for both vertical and horizontal displacements (for every step after
+                    the initial, most-coarse image alignment that used a [-15, 15] range). However, I noticed that a few TIF images were not well-aligned,
+                    so I inreased this range to [-7, 7]. This led to much better results, without a catastrophic runtime increase.
+                </p>
+        <h2>Image Outputs</h2>
+            <p>
+                *for every image displacement vector [a b] given, the first value is the vertical displacement,
+                and the second value is the horizontal displacement.
+            </p>
+            <h3>JPEG Aligned Images (Exhaustive Search)</h3>
+                <h4>Cathedral</h4>
+                    <img src="./media/cathedral_out.jpg">
+                    <p>Green Image displacement: [5, 2]</p>
+                    <p>Red Image displacement: [12, 3]</p>
+                <h4>Monastery</h4>
+                    <img src="./media/monastery_out.jpg">
+                    <p>Green Image displacement: [-3, 2]</p>
+                    <p>Red Image displacement: [3, 2]</p>
+                <h4>Tobolsk</h4>
+                    <img src="./media/tobolsk_out.jpg">
+                    <p>Green Image displacement: [3, 3]</p>
+                    <p>Red Image displacement: [6, 3]</p>
+            <h3>TIF Aligned Images (Image Pyramid)</h3>
+                <h4>Church</h4>
+                    <img src="./media/church_out.jpg">
+                    <p>Green Image displacement: [25  4]</p>
+                    <p>Red Image displacement: [58 -4]</p>
+                <h4>Emir</h4>
+                    <img src="./media/emir_out.jpg">
+                    <p>Green Image displacement: [49 24]</p>
+                    <p>Red Image displacement: [103  57]</p>
+                <h4>Harvesters</h4>
+                    <img src="./media/harvesters_out.jpg">
+                    <p>Green Image displacement: [59 16]</p>
+                    <p>Red Image displacement: [124  13]</p>
+                <h4>Icon</h4>
+                    <img src="./media/icon_out.jpg">
+                    <p>Green Image displacement: [41 17]</p>
+                    <p>Red Image displacement: [90 23]</p>
+                <h4>Lady</h4>
+                    <img src="./media/lady_out.jpg">
+                    <p>Green Image displacement: [56  8]</p>
+                    <p>Red Image displacement: [116  11]</p>
+                <h4>Melons</h4>
+                    <img src="./media/melons_out.jpg">
+                    <p>Green Image displacement: [82 11]</p>
+                    <p>Red Image displacement: [169  11]</p>
+                <h4>Onion Church</h4>
+                    <img src="./media/onion_church_out.jpg">
+                    <p>Green Image displacement: [51 27]</p>
+                    <p>Red Image displacement: [108  36]</p>
+                <h4>Sculpture</h4>
+                    <img src="./media/sculpture_out.jpg">
+                    <p>Green Image displacement: [ 33 -11]</p>
+                    <p>Red Image displacement: [140 -27]</p>
+                <h4>Self Portrait</h4>
+                    <img src="./media/self_portrait_out.jpg">
+                    <p>Green Image displacement: [79 29]</p>
+                    <p>Red Image displacement: [169  35]</p>
+                <h4>Three Generations</h4>
+                    <img src="./media/three_generations_out.jpg">
+                    <p>Green Image displacement: [53 14]</p>
+                    <p>Red Image displacement: [112  11]</p>
+                <h4>Train</h4>
+                    <img src="./media/train_out.jpg">
+                    <p>Green Image displacement: [43  6]</p>
+                    <p>Red Image displacement: [87 32]</p>
+</body>
+</html>
