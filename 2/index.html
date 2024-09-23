@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head p>
+    <title>My Portfolio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+            img {
+                width: 500px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Hriday Sheth Project 2 — Fun with Filters and Frequencies!</h1>
+        <h2>Project Information</h2>
+            <h3>Overview</h3>
+                <p>
+                    This project used different filters and frequencies of images to create different effects. First,
+                    we used filters like finite differences and Gaussian filters to get the edges of images. In the next part
+                    of the project, we used unsharp masking to make images more crisp. Next, we created "hybrid images" by
+                    combining low and high frequency images. Finally, we leveraged multi-resolution blending to create a
+                    "blended" image that smoothly combines parts of two different images.
+                </p>
+        <h2>Image Outputs</h2>
+            <h3>Part 1.1: Finite Difference Operator</h3>
+                <p>
+                    We apply simple finite difference 
+                    filters to find the image's gradient in the
+                    x and y directions, then calculate the gradient
+                    magnitude and adjust the threshold to create a clean
+                    edge image that shows real edges without too much noise.
+                </p>
+                <img src="./media/img_1.png">
+                <img src="./media/img_2.png">
+                <img src="./media/img_3.png">
+                <img src="./media/img_4.png">
+                <img src="./media/img_5.png">
+            <h3>Part 1.2: Derivative of Gaussian (DoG) Filter</h3>
+                <p>
+                    We reduce the noise by first blurring the image with
+                    a Gaussian filter, then applying the same process as
+                    before to find the gradients.
+                </p>
+                <img src="./media/img_6.png">
+                <img src="./media/img_7.png">
+                <img src="./media/img_8.png">
+                <img src="./media/img_9.png">
+                <img src="./media/img_10.png">
+                <img src="./media/img_11.png">
+            
+                <p>
+                    Next, instead of applying the Gaussian and finite difference filters
+                    separately, we create Derivative of Gaussian (DoG) filters by
+                    convolving the Gaussian with the x and y difference operators.
+                </p>
+                <img src="./media/img_12.png">
+                <img src="./media/img_13.png">
+                <img src="./media/img_14.png">
+                <img src="./media/img_15.png">
+                <img src="./media/img_16.png">
+                <img src="./media/img_17.png">
+                <img src="./media/img_18.png">
+
+            <h3>Part 2.1: Image "Sharpening"</h3>
+                <p>
+                    To sharpen a blurry image, we first apply a Gaussian filter
+                    to create a blurred version, then subtract this blurred
+                    image from the original to isolate the high frequencies.
+                    We then add the high frequencies back into the image,
+                    enhancing sharpness.
+                </p>
+                <img src="./media/img_19.png">
+                <img src="./media/img_20.png">
+                <img src="./media/img_21.png">
+                <img src="./media/img_22.png">
+            <h3>Part 2.2: Hybrid Images</h3>
+                <p>
+                    Hybrid images combine the low-frequency (blurred)
+                    part of one image with the high-frequency (detailed)
+                    part of another, creating an effect that changes based on viewing distance.
+                    Up close you see the detailed image, but from far away you see
+                    the blurred image.
+                </p>
+                <img src="./media/img_23.png">
+                <p>(For the following hybrid image — we here have the FFT of the two input images,
+                    the filtered images, and the hybrid image)</p>
+                <img src="./media/img_24.png">
+                <img src="./media/img_25.png">
+                <img src="./media/img_26.png">
+            <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+                <p> 
+                    Here, we implement Gaussian and Laplacian stacks,
+                    which are kind of like pyramids but without the downsampling. This helps
+                    us create the blended "oraple".
+                </p>
+                <img src="./media/img_27.png">
+                <img src="./media/img_28.png">
+            <h3>Part 2.4: Multiresolution Blending (a.k.a. the oraple!)</h3>
+                <p> 
+                    We create two more blended images using the Gaussian/Laplacian stacks
+                    developed in the previous section.
+                </p>
+                <img src="./media/img_29.png">
+                <img src="./media/img_30.png">
+</body>
+</html>
