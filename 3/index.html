@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head p>
+    <title>My Portfolio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+            img {
+                width: 500px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Hriday Sheth Project 3 — Face Morphing!</h1>
+        <h2>Project Information</h2>
+            <h3>Overview</h3>
+                <p>
+                    Project 3 was about creating a face morphing animation by warping the shape
+                    and blending the colors of two images. The process involved defining corresponding
+                    keypoints between two faces, generating a triangulation mesh, and performing an
+                    affine warp to compute intermediate frames.
+                </p>
+        <h2>Image Outputs</h2>
+            <h3>Part 1: Defining Correspondences</h3>
+                <p>
+                    Here, we defined pairs of corresponding points on the two images by hand. The original image is
+                    a headshot of me, and the destination image is a headshot of Leonardo DiCaprio.
+                </p>
+                <img src="./media/1.png">
+            <h3>Part 2: Computing the "Mid-way Face"</h3>
+                <p>
+                    Before computing the whole morph sequence, we computed the mid-way face of the two images.
+                </p>
+                <img src="./media/2.png">
+                <img src="./media/3.png">
+                <img src="./media/4.png">
+            
+
+            <h3>Part 3: The Morph Sequence</h3>
+                <p>
+                    Now, we have the morph sequence of going from the original image to the destination image over 45 frames.
+                </p>
+                <img src="./media/5.gif">
+                
+            <h3>Part 4: The "Mean face" of a population</h3>
+                <p>
+                    We used similar techniques with triangulation to create the mean face of a population of faces. I also morphed
+                    a few specific source images to the mean shape. Finally, I morphed my own face to the average shape and morphed
+                    the average face into the shape of my face.
+                </p>
+                <h4>Mean Face:</h4>
+                <img src="./media/6.png">
+                <h4>Select Faces Morphed to Mean Shape:</h4>
+                <img src="./media/7.png">
+                <img src="./media/8.png">
+                <img src="./media/9.png">
+                <h4>My Face Morphed to Mean Shape:</h4>
+                <img src="./media/10.png">
+                <h4>Mean Face Morphed to My Face:</h4>
+                <img src="./media/11.png">
+
+            <h3>Part 5: Caricatures: Extrapolating from the mean</h3>
+                <p> 
+                    Here, we produced a caricature of my face by extrapolating from the population mean I calculated in the last step.
+                </p>
+                <img src="./media/12.png">
+</body>
+</html>
