@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head p>
+    <title>My Portfolio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+            img {
+                width: 500px;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Hriday Sheth Project 4 — Image Warping and Mosaicing</h1>
+        <h2>Project Information</h2>
+            <h3>Overview</h3>
+                <p>
+                    This project was about learning how to do image mosaicing. We shoot and
+                    digitize pictures, recover homographies, warp images, and blend images into a
+                    mosaic.
+                </p>
+                <p>
+                    By selecting corresponding points between two images, we can compute a homography matrix.
+                    The homography matrix does an affine transformation to map points from one image to the
+                    corresponding points in the other image. We can then use this homography matrix to warp one
+                    image into the perspective of the other.
+                </p>
+                <p>
+                    The affine transformation can be used to rectify an image, aka "straighten" it so that a
+                    specific part of the image appears flat and the focus of the image. The affine transoformation
+                    can also be used to create a mosaic by making one image appear to be in the perspective
+                    of another image.
+                </p>
+        <h2>Image Outputs</h2>
+            <h3>Rectified Images</h3>
+                <p>
+                    Picture of the view outside my apartment (taken from balcony), and then the rectification
+                    of an exterior wall of a building in my view.
+                </p>
+                <img src="./media/1.5.jpg">
+                <img src="./media/1.png">
+                <p>
+                    Stock photo of a room, with the rectification of the mirror.
+                </p>
+                <img src="./media/2.5.jpg">
+                <img src="./media/2.png">
+            <h3>Producing Mosaics</h3>
+                <p>
+                     Warping two photos taken of my view, from my balcony.
+                </p>
+                <img src="./media/3.png">
+                <p>
+                    Warping two photos taken of a room in our house.
+                </p>
+                <img src="./media/4.png">
+                <p>
+                    Warping two photos taken of my bedroom.
+                </p>
+                <img src="./media/5.png">
+                
+            
+</body>
+</html>
