@@ -76,6 +76,11 @@
                 Here, we completed the process outlined at the start of the project, selecting sets of corresponding
                 points between two images and warping one image into the perspective of the other. This produces
                 a panoramic-like image.
+                <br><br>
+                For pixels of the resulting image that have overlap between both the images, we take the average pixel value.
+                While this works fine to a certain degree, the resulting image is not very smooth. A point of improvement
+                would be to use other techniques, like a weighted average or a Laplacian pyramid, to make the transition
+                much smoother.
             </p>
             <h3>Image Outputs</h3>
                 <h4>
