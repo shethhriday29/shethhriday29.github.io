@@ -34,8 +34,30 @@
                     can also be used to create a mosaic by making one image appear to be in the perspective
                     of another image.
                 </p>
-        <h2>Image Outputs</h2>
-            <h3>Rectified Images</h3>
+        <h2>Recovering Homographies</h2>
+            <p>
+                As mentioned above, we first need to select corresponding points between the two images. We then
+                compute the homography by solving for the minimum-norm solution of the following linear system:            
+            </p>
+            <img src="./media/4a_pic.jpg">
+            <p>
+               In the above picture, P2 are the set of points part of the image that we transform to look like
+               it's in the perspective of the other image. P1 are the points in this other image. Each point in P2
+               corresponds to a point in P1. Thus, the notation in the image works as follows: X1(P2) means we want the
+               x-value of the 1-indexed point in P2.
+               <br>
+               <br>
+               We use the "r" values above to construct the homography matrix H. Applying H to the image of P2 will
+               transform it to look like it's in the perspective of P1.
+            </p>
+        <h2>Rectified Images</h2>
+            <p>
+                To make rectified image, we apply the homography matrix to 4 points selected in an image (the points "P2").
+                However, unlike in warped images, the P1 points don't correspond to points in another image. Rather,
+                they are points that form a rectangle. This means that the homography matrix will map the part of the
+                image specified by P2 points and "rectify" that part of the image.
+            </p>
+            <h3>Image Outputs</h3>
                 <p>
                     Picture of the view outside my apartment (taken from balcony), and then the rectification
                     of an exterior wall of a building in my view.
@@ -47,19 +69,49 @@
                 </p>
                 <img src="./media/2.5.jpg">
                 <img src="./media/2.png">
-            <h3>Producing Mosaics</h3>
-                <p>
+        <h2>Warped Images</h2>
+            <p>
+                Here, we completed the process outlined at the start of the project, selecting sets of corresponding
+                points between two images and warping one image into the perspective of the other. This produces
+                a panoramic-like image.
+            </p>
+            <h3>Image Outputs</h3>
+                <h4>
                      Warping two photos taken of my view, from my balcony.
+                </h4>
+                <p>
+                    Here are the original two images:
+                </p>
+                <img src="./media/1.5.jpg">
+                <img src="./media/3x.jpg">
+                <p>
+                    Here is the warped image:
                 </p>
                 <img src="./media/3.png">
-                <p>
+                <h4>
                     Warping two photos taken of a room in our house.
-                </p>
-                <img src="./media/4.png">
+                </h4>
                 <p>
-                    Warping two photos taken of my bedroom.
+                    Here are the original two images:
                 </p>
-                <img src="./media/5.png">
+                <img src="./media/4y.jpg">
+                <img src="./media/4x.jpg">
+                <p>
+                    Here is the warped image:
+                </p>
+                <img src="./media/4f.png">
+                <h4>
+                    Warping two photos taken of my bedroom.
+                </h4>
+                <p>
+                    Here are the original two images:
+                </p>
+                <img src="./media/5x.jpg">
+                <img src="./media/5y.jpg">
+                <p>
+                    Here is the warped image:
+                </p>
+                <img src="./media/5f.png">
                 
             
 </body>
