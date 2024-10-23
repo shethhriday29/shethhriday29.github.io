@@ -34,7 +34,12 @@
                     can also be used to create a mosaic by making one image appear to be in the perspective
                     of another image.
                 </p>
-        <h2>Recovering Homographies</h2>
+                <p>
+                    In the latter half of the project, we used techniques including adapative non-maximal suppression,
+                    RANSAC, and feature matching to stitch together two images. More details on these techniques will be
+                    included later on this page.
+                </p>
+        <h2>4A Part 1:Recovering Homographies</h2>
             <p>
                 As mentioned above, we first need to select corresponding points between the two images. We then
                 compute the homography by solving for the minimum-norm solution of the following linear system:            
@@ -71,7 +76,7 @@
                 <img src="./media/2.5.jpg">
                 <br><br>
                 <img src="./media/2.png">
-        <h2>Warped Images</h2>
+        <h2>4A Part 2: Warped Images</h2>
             <p>
                 Here, we completed the process outlined at the start of the project, selecting sets of corresponding
                 points between two images and warping one image into the perspective of the other. This produces
@@ -119,6 +124,108 @@
                     Here is the warped image:
                 </p>
                 <img src="./media/5f.png">
+        <h2>4B: Feature Matching and Autostitching</h2>
+            <h3>Corner Detection</h3>
+            <p>
+                We leverage "corners" (as detected by the Harris corner detector) as features to match between two images.
+                In this case, "corners" are unique points in an image that have a high change in intensity when moved a small distance in
+                any direction. As we'll later see below, Harris corner detection results in a lot of "corner" points in an image,
+                which then need to be filtered in order to identify the most relevant features for matching.
+            </p>
+            <h3>ANMS</h3>
+            <p>
+                As we can see from our results, Harris corner detection results in a lot of "corner" points in an image.
+                Adaptive non-maximal suppression is a technique that helps us filter out these points so that we are left with
+                only the most relevant features. With ANMS, the algorithm has a "radius," and within the radius, a "stronger" corner
+                will suppress "weaker" corners. As we see below, the ANMS results in a much more manageable number of corners,
+                while still retaining the image's most relevant features.
+            </p>
+            <h3>Feature Extraction</h3>
+            <p>
+                Next, we must extract features for each corner. We do this by taking a 8x8 patch around the corner and performing some operations on it.
+                By extracting a small region around each point, resizing it, and
+                normalizing it, we create a standardized representation that can be used
+                to match points across different images.
+            </p>
+            <h3>Feature Matching</h3>
+            <p>
+                Based on this standardized representation for each corner, we can match features between two images.
+                We do this by going through each selected corner in the first image, and finding the two corners
+                in the second image that have the lowest distance to the corner from the first image. If the match to the
+                "better" corner is sufficiently better than the match to the "worse" corner, we add the better match to our
+                list of matches.
+            </p>
+            <h3>RANSAC</h3>
+            <p>
+                RANSAC lets us to identify the best matches between two images and filter out outliers.
+                We first select a random set of matches, and then compute a homography matrix using the points in the set to map the
+                second image to the perspective of the first image.
+                We apply this homography matrix to the all the points in second image, check the distance to the coresponding point
+                in the first image. If the distance is too high, we discard the match as an outlier. We repeat this process several times
+                (1000 times), computing a new homography matrix each time and using the set of matches that have the most number of inliers.
+                We return this set of inliers.
+            </p>
+            <h3>Image Warping</h3>
+            <p>
+                Based on the set of matches that result from the RANSAC algorithm running, then run the same image warping process
+                as we did earlier in the project (except that this time, the points are auto-selected rather than manually selected).
+            </p>
+            <h3>Image Outputs</h3>
+            <p>For every set of images that get merged below, we have the following six sets of images:
+                <ol>
+                    <li>Original images</li>
+                    <li>Harris corner detection results</li>
+                    <li>ANMS results</li>
+                    <li>Feature matching results</li>
+                    <li>RANSAC inlier results</li>
+                    <li>Final stitched image</li>
+                </ol>
+            </p>
+            <h4>Warping two photos taken of my view, from my balcony:</h4>
+            <p>Original images:</p>
+            <img src="./media/10.png">
+            <p>Harris corner detection results:</p>
+            <img src="./media/11.png">
+            <p>ANMS results:</p>
+            <img src="./media/12.png">
+            <p>Feature matching results:</p>
+            <img src="./media/13.png">
+            <p>RANSAC inlier results:</p>
+            <img src="./media/14.png">
+            <p>Final stitched image:</p>
+            <img src="./media/15.png">
+
+            <p>For reference, here is the warped image from 4A Part 2 with manually selected points:</p>
+            <img src="./media/3.png">
+
+
+            <h4>Warping two photos taken of the building I live next to:</h4>
+            <p>Original images:</p>
+            <img src="./media/20.png">
+            <p>Harris corner detection results:</p>
+            <img src="./media/21.png">
+            <p>ANMS results:</p>
+            <img src="./media/22.png">
+            <p>Feature matching results:</p>
+            <img src="./media/23.png">
+            <p>RANSAC inlier results:</p>
+            <img src="./media/24.png">
+            <p>Final stitched image:</p>
+            <img src="./media/25.png">
+
+            <h4>Warping two photos of a building in San Jose taken from Google Street View:</h4>
+            <p>Original images:</p>
+            <img src="./media/30.png">
+            <p>Harris corner detection results:</p>
+            <img src="./media/31.png">
+            <p>ANMS results:</p>
+            <img src="./media/32.png">
+            <p>Feature matching results:</p>
+            <img src="./media/33.png">
+            <p>RANSAC inlier results:</p>
+            <img src="./media/34.png">
+            <p>Final stitched image:</p>
+            <img src="./media/35.png">
                 
             
 </body>
