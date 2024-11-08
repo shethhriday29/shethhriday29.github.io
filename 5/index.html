@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head p>
+    <title>My Portfolio</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 20px;
+            img {
+                width: auto;
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Hriday Sheth Project 5A — The Power of Diffusion Models</h1>
+
+
+        <h2>0: Setup</h2>
+            <p>RANDOM SEED USED THROUGH THE PROJECT: 29</p>
+            <p>
+                Here, we try image generation via DeepFloyd for different prompts and different
+                number of inference steps. We can see that as we increase the number of inference steps,
+                the image becomes higher and higher quality.
+            </p>
+            <p>"a rocket ship" at 5 inference steps</p>
+                <img src="./media/0/5/rocket.png">
+            <p>"a rocket ship" at 20 inference steps</p>
+                <img src="./media/0/20/rocket.png">
+            <p>"a rocket ship" at 40 inference steps</p>
+                <img src="./media/0/40/rocket.png">
+
+            <p>"an oil painting of a snowy mountain village" at 5 inference steps</p>
+                <img src="./media/0/5/village.png">
+            <p>"an oil painting of a snowy mountain village" at 20 inference steps</p>
+                <img src="./media/0/20/village.png">
+            <p>"an oil painting of a snowy mountain village" at 40 inference steps</p>
+                <img src="./media/0/40/village.png">
+
+            <p>"a man wearing a hat" at 5 inference steps</p>
+                <img src="./media/0/5/hat.png">
+            <p>"a man wearing a hat" at 20 inference steps</p>
+                <img src="./media/0/20/hat.png">
+            <p>"a man wearing a hat" at 40 inference steps</p>
+                <img src="./media/0/40/hat.png">
+            
+        <h2>1.1: Implementing the Forward Process</h2>
+            <p>
+                The forward process in a diffusion model gradually adds noise to a clean image, making it
+                progressively noisier as the timestep increases. In this process, you start with a clean image,
+                x0. Then, we leverage the `alphas_cumprod` array to control the noise scaling at each timestep.
+                At each timestep, the clean image is scaled by a factor depending on the value `alphas_cumprod`
+                at the particular timestep, as well as added to by some variance that also depends on the value.
+                As a whole, the image becomes progressively noisier as the timestep increases.
+            </p>
+            <p>
+                Below, we can see the results of the forward process at several different timesteps, starting
+                with the clean image at timestep 0, and ending with the final noisy image at timestep 1000.
+                The clean image here is used throughout Project 5A, and is a picture of Berkeley's Campanile.
+            </p>
+            <img src="./media/1.1.png">
+        <h2>1.2: Classical Denoising</h2>
+            <p>
+                In this section, we use Gaussian blur filtering to attempt to denoise the image.
+                This leverages the TensorFlow `gaussian_blur` function. However, we did
+                not get good results, as the noise was not removed effectively.
+            </p>
+            <p>
+                Below, we can see the results of classical denoising on the noisy image at different
+                timesteps. We can see that as a whole, classical denoising is not that effective, and
+                that the larger the timestep is for the noisy image, the worse the denoising is.
+            </p>
+            <img src="./media/1.2.png">
+        
+        <h2>1.3: One Step Denoising</h2>
+            <p>
+                Here, we use a one-step pretrained diffusion model to denoise the image.
+                The UNet was trained on a very large dataset of pairs of original and noisy images.
+                We can use the model to recover Gaussian noise from a noisy image, and then remove
+                the noise to recover something close to the original image. The model was trained
+                with text conditioning, and thus we must provide a text prompt embedding when denoising.
+                For our example here, we use the phrase "a high quality photo."
+            </p>
+            <p>
+                Here, we can see the results of one-step denoising on the noisy image at different
+                timesteps. We can see that as a whole, one-step denoising is much more
+                effective than classical denoising. Additionally, the larger the timestep,
+                the farther the final result from the original "clean" image.
+            </p>
+            <img src="./media/1.3.png">
+        <h2>1.4: Iterative Denoising</h2>
+            <p>
+                In 1.3, we noticed the quaality of one-step denoising worsened as the timestep increased.
+                In 1.4, we denoise iteratively. There is a formula for an estimate for the image at
+                the each timestep, which leverages (1) the values of `alphas_cumprod` at the current and
+                previous timesteps, and (2) the model prediction for the clean image at the current timestep,
+                (3) the image at the previous timestep, and (4) variance.
+            </p>
+            <p >
+                Just like in 1.3, we use UNet and the prompt "a high quality photo" to estimate noise for 
+                each timestep, and use this estimate of noise to make our estimated "clean" image at that timestep.
+            </p>
+            <p>
+                In theory, we could do all timesteps going from T=1000 to T=1, but in practice, we
+                can skip some of timesteps with a stride greater than 1. Here, we use a stride of 30, working from 990 back to 0.
+            </p>
+            <p>
+                Below, we can see the results of iterative denoising at every fifth timestep. As we can see,
+                the results become progressively less noisy as we iterate.
+            </p>
+            <img src="./media/1.4.1.png">
+            <img src="./media/1.4.2.png">
+            <img src="./media/1.4.3.png">
+            <img src="./media/1.4.4.png">
+            <img src="./media/1.4.5.png">
+            <p>
+                Now, we can see the predicted image using iterative denoising, a single denoising step,
+                as well as Gaussian blurring, and compare the results.
+            </p>
+            <img src="./media/1.4.6.png">
+        
+        <h2>1.5: Diffusion Model Sampling</h2>
+            <p>
+                Here, we can use diffusion modeling to generate new images. We start with a random
+                noise vector, and then iteratively denoise it using the model via the prompt
+                "a high quality photo." This will help push the randomly generated noise vector
+                to something in the subspace of all images that includes realistic images.
+                We generate 5 high quality images.
+            </p>
+            <img src="./media/1.5.1.png">
+            <img src="./media/1.5.2.png">
+            <img src="./media/1.5.3.png">
+            <img src="./media/1.5.4.png">
+            <img src="./media/1.5.5.png">
+        
+        <h2>1.6: Classifier Free Guidance (CFG)</h2>
+            <p>
+                Here, we use a technique called Classifier Free Guidance to generate new images.
+                At each timestep, in addition to estimating "noise" via the prompt "a high quality photo",
+                we also estimate the noise using the empty prompt "". We then take a weighted average of
+                the two estimates, with the weighting factor being a scalar. We then use this
+                estimated noise to generate good images. Magic happens when the scalar is greater than 1,
+                and using a scalar factor of 7 leads to great results.
+            </p>
+            <img src="./media/1.6.1.png">
+            <img src="./media/1.6.2.png">
+            <img src="./media/1.6.3.png">
+            <img src="./media/1.6.4.png">
+            <img src="./media/1.6.5.png">
+        
+        <h2>1.7: Image-to-image Translation</h2>
+            <p>
+                Similar to 1.4, we iteratively denoise images that have noise added to them here.
+                However, here we also use the technique of Classifier Free Guidance that we developed to denoise the image.
+                As expected, this leads to better results.
+            </p>
+            <p>
+                In addition, we can see the higher lower the starting index/the higher the initial noise,
+                the farther the final clean estimate is from the original image. This is because the
+                higher the initial noise, the more variability is introduced throughout the denoising process.
+            </p>
+            <p>Here, we can see the results of this procedure on the test image:</p>
+            <img src="./media/1.7.0.1.png">
+            <p>Now, we can see the results on two other images.</p>
+            <p>Original image:</p>
+            <img src="./media/bridge.jpg">
+            <p>Results:</p>
+            <img src="./media/1.7.0.2.png">
+            <p>Original image:</p>
+            <img src="./media/darknight.jpg">
+            <p>Results:</p>
+            <img src="./media/1.7.0.3.png">
+            <h3>1.7.1: Editing Hand-Drawn and Web Images</h3>
+            <p>
+                Here, we apply the techniques we developed to iteratively denoised both hand-drawn and web images
+                that have noise added to them. We can see results below.
+            </p>
+            <p>Original image:</p>
+            <img src="./media/mc.jpg">
+            <p>Results:</p>
+            <img src="./media/1.7.0.12.png">
+            <p>Original image:</p>
+            <img src="./media/1.7.1.10.png">
+            <p>Results:</p>
+            <img src="./media/1.7.1.2.png">
+            <p>Original image:</p>
+            <img src="./media/1.7.1.4.png">
+            <p>Results:</p>
+            <img src="./media/1.7.1.6.png">
+            <h3>1.7.2: Inpainting</h3>
+            <p>
+                Via inpainting, we're able to "fill in" parts of an image that are missing. Here,
+                we create a "mask" of images — where the mask is set to 1, we keep the image as is. However,
+                where the mask is set to 0, we attempt to fill in the missing parts of the image. 
+                This inpainting code uses a Stable Diffusion model to iteratively fill
+                in missing parts of an image by further refining noise estimates
+                at each timestep. Starting with a masked image, it predicts how the missing
+                regions should look based on a prompt and blends these predictions with the
+                original unmasked areas.
+            </p>
+            <p>Original image and mask:</p>
+            <img src="./media/1.7.2.1.png">
+            <p>Results:</p>
+            <img src="./media/1.7.2.2.png">
+            <p>Original image and mask:</p>
+            <img src="./media/1.7.2.3.png">
+            <p>Results:</p>
+            <img src="./media/1.7.2.4.png">
+            <p>Original image and mask:</p>
+            <img src="./media/1.7.2.5.png">
+            <p>Results:</p>
+            <img src="./media/1.7.2.6.png">
+            <h3>1.7.3: Text-conditional Image-to-image Translation</h3>
+            <p>
+                Here, we do the exact same thing as in 1.7 (guiding an image back from having
+                noise to being cleaner), but instead of using a more general prompt like
+                "a high quality photo," we become creative and use different prompts. This means
+                that as an image is denoised, it becomes closer to the original/clean image
+                while also being influenced by the prompt. We can see examples below.
+            </p>
+            <p>Applying the prompt "a rocket ship" to the test/original image of the Campanile:</p>
+            <p>Results:</p>
+            <img src="./media/1.7.3.1.png">
+            
+            <p>Applying the prompt "a photo of a dog" to the following image of a rickshaw:</p>
+            <img src="./media/rickshaw.jpg">
+            <p>Results:</p>
+            <img src="./media/1.7.3.2.png">
+
+            <p>Applying the prompt "an oil painting of a snowy mountain village" to the following image of Gotham City:</p>
+            <img src="./media/gotham.jpg">
+            <p>Results:</p>
+            <img src="./media/1.7.3.3.png">
+        
+        <h2>1.8: Visual Anagrams</h2>
+            <p>
+                In this part of the project, we create visual anagrams. For each visual
+                anagram, the image looks like one prompt when viewed, but looks like another prompt
+                when the image is flipped (aka, rotated 180 degrees). The way we do this is very creative.
+            </p>
+            <p>
+                Our process is a lot like CFG, leveraging an estimated noise at the different timesteps
+                to make a progressively more clear denoised image. However, to make visual anagrams,
+                we generate an estimate for noise for both (1) the image in the original direction, based
+                on one prompt, and (2) the image in the flipped direction, based on another prompt. We then
+                take the average of the two estimates. We use this estimate of noise to iteratively denoise.
+                This leads to a denoised image that looks like the first prompt when viewed in the original
+                direction, and looks like the second prompt when viewed in the flipped direction.
+            </p>
+            <p>Anagram: "an oil painting of an old man" (straight) and "an oil painting of people around a campfire" (flipped)</p>
+            <img src="./media/1.8.1.png">
+            <p>Anagram: "a pencil" (straight) and "a rocket ship" (flipped)</p>
+            <img src="./media/1.8.2.png">
+            <p>Anagram: "an oil painting of a snowy mountain village" (straight) and "a photo of the amalfi coast" (flipped)</p>
+            <img src="./media/1.8.3.png">
+            
+        <h2>1.9: Hybrid Images</h2>
+            <p>
+                Here, we create "hybrid" images that are aligned with one prompt when viewed at closely,
+                and another prompt when looked at from a distance.
+            </p>
+            <p>
+                Just like in 1.8, we use a variation of CFG to iteratively denoise. However, at each
+                timestep, we generate an estimated noise for both (1) the image based on the "close" prompt,
+                and (2) the image based on the "far" prompt. We then run the first noise estimation through
+                a high-pass filter, and the second through a low-pass filter. We then add the two results
+                together to get a hybrid image. This is because high frequencies are more visible when viewed
+                closely, and low frequencies are more visible when viewed from a distance.
+            </p>
+            <p>Hybrid Image: "a lithograph of waterfalls" (close) and "a lithograph of a skull" (far)</p>
+            <img src="./media/1.9.1.png">
+            <p>Hybrid Image: "an oil painting of a snowy mountain village" (close) and "a photo of a dog" (far)</p>
+            <img src="./media/1.9.2.png">
+            <p>Hybrid Image: "a man wearing a hat" (close) and "a rocket ship" (far)</p>
+            <img src="./media/1.9.3.png">
+        
+</body>
+</html>
