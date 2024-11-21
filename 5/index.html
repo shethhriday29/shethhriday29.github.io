@@ -14,8 +14,14 @@
     </style>
 </head>
 <body>
-    <h1>Hriday Sheth Project 5A — The Power of Diffusion Models</h1>
-
+    <h1>Hriday Sheth Project 5 — Fun with Diffusion Models!</h1>
+        <p>
+            This project was a hands-on introduction to the world of diffusion models.
+            In Part A, we used a pretrained diffusion model to generate images, denoise images,
+            and create visual anagrams. In Part B, we implemented a diffusion model from scratch,
+            and explored the effects of different settings on the generated images.
+        </p>
+        <h1>5A — The Power of Diffusion Models</h1>
 
         <h2>0: Setup</h2>
             <p>RANDOM SEED USED THROUGH THE PROJECT: 29</p>
@@ -275,5 +281,82 @@
             <p>Hybrid Image: "a man wearing a hat" (close) and "a rocket ship" (far)</p>
             <img src="./media/1.9.3.png">
         
+        <h1>5B — Diffusion Models from Scratch!</h1>
+            <h2>Training a Single-Step Denoising UNet</h2>
+            <p>
+                Here, we implement a single-step denoising UNet. It uses the architecture outlined in the instructions,
+                involving upsampling, downsampling, and skip connections. We train the UNet to minimize the L2 loss between
+                the predicted denoised image and the original image. We use a number of different "blocks" that we create,
+                involving standard tensor operations including convolutions, concatenation, GELU, etc.
+            </p>
+            <p>
+                In order to validate the results of the UNet, we need to generate noisy images. Here, we can see that we take
+                clean images from the MNIST dataset. We then add varying amounts of noise to each image (as indicated by the
+                sigma value). We leverage a Gaussian distribution to generate the random noise.
+            </p>
+            <img src="./mediaB/1.png">
+            <img src="./mediaB/2.png">
+            <img src="./mediaB/3.png">
+            <img src="./mediaB/4.png">
+            <img src="./mediaB/5.png">
+            <p>
+                Next, we need to actually train the UNet. We use the MNIST training set with the original images, as well as 
+                "noisy" versions of each of the images with a sigma value of 0.5. We use a number of hidden dimensions of 128,
+                run over 5 epochs of training, a learning rate of 1e-4, and batch size of 256. The resuls of the training are shown below.
+            </p>
+            <img src="./mediaB/8.png">
+            <p>
+                Now, we're able to visualize the training process. Below, we can see the original image and noisy image the model trains on,
+                followed by the predicted denoised image. We can see such results for after epoch 1 of training, and after epoch 5 of training.
+            </p>
+            <img src="./mediaB/6.png">
+            <img src="./mediaB/7.png">
+            <p>
+                Finally, we are able to validate our results and use the UNet for inference. We run the denoising process on images
+                not part of the training set. Additionally, we run the model not just on noisy images with sigma=0.5, but also,
+                images with sigma in [0.0, 0.2, 0.4, 0.6, 0.8, 1.0] to ensure that the model generalizes to denoising a range of
+                amounts of noise. We can see the results below.
+            </p>
+            <img src="./mediaB/9.png">
+            <h2>Training a Diffusion Model</h2>
+            <p>
+                Now that we know how to make a single-step denoising UNet, we go broader and train a UNet that can iteratively
+                denoise an image, producing better results. Minimizing the L2 loss is still the north star, but here, we 
+                use the difference between the predicted noise and actual noise, rather than predicted image and original image.
+            </p>
+            <p>
+                The first step is ensuring our model is time-conditioned. To do this, we revisit our original UNet architecture, but
+                add new blocks to factor in the time dimension. After that, use a formula to train this time-conditioned UNet,
+                applying different amounts of noise to the clean image based on the timestep, and having the model train on the clean image,
+                noisy image, and corresponding timestep. We can see the loss curve of the model training below:
+            </p>
+            <img src="./mediaB/10.png">
+            <p>
+                We can now use the model for inference and use the model to denoise images. However, if we start with pure noise,
+                our model can serve to effectively generate images of numbers. We can see below the results of the model generating
+                images of digits, after 5 epochs of training and after 20 epochs of training. However, one drawback we notice is that
+                while the results do look like written characters, many of them do not easily resemble one of nine actual digits. This is
+                because the model is not conditioned on the actual digit that is written, which is the final part of the project.
+            </p>
+            <p>Results after 5 epochs of training:</p>
+            <img src="./mediaB/11.png">
+            <p>Results after 20 epochs of training:</p>
+            <img src="./mediaB/12.png">
+            <p>
+                Finally, we condition the model on the actual digit that is written. We do this by adding more blocks to the original
+                UNet architecture (the way we did to factor in time), and then during training, passing in the one-hot encoding of 
+                the digit. (However, 10% of the time, we passed in a zero vector, as we want the UNet to work without it being
+                conditioned on the class.) We can visualize the training via the loss curve below: 
+            </p>
+            <img src="./mediaB/13.png">
+            <p>
+                Finally, we can see the results of running inference with the model. When generating images (aka denoising "images" that are
+                pure noise), we can also specify the 0-9 digit we want generated. This leads to all the images generated below matching distinctly
+                to one of the digits 0-9. We can see the results below for the model after 5 epochs of training, and after 20 epochs of training.
+            </p>
+            <p>Results after 5 epochs of training:</p>
+            <img src="./mediaB/14.png">
+            <p>Results after 20 epochs of training:</p>
+            <img src="./mediaB/15.png">
 </body>
 </html>
